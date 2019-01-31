@@ -1,0 +1,8 @@
+{
+  "logging": "enabled",
+  "mongoDatabase": "test",
+  "port": "PORT",
+  "authentication": {
+    "secret": "test"
+  }
+}

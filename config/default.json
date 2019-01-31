@@ -1,0 +1,42 @@
+{
+  "host": "localhost",
+  "port": 3001,
+  "public": "../public/",
+  "paginate": {
+    "default": 25,
+    "max": 100
+  },
+  "authentication": {
+    "secret": "321363c39b83776db24bab1a9ed462c895a1b13e5a764c62ea9c31e642394e1157552010df54b705a8068377b9743e1fffafed725c0a05bb5f64a0b1d36623d59e830c65aae3b3e4ea393232e2976e02c0093a2ba44e15a277866497a1c246a2e17b5ac6464949eacdb0c956a5a458b1790920b30183ac44058039dfabf85123c4cd2d918c0d477df4209b57914c6c1931ffc2eed74249f783e984081339211c520e552371b2d3b3cb1cb059c685df45390fd1761459acdf2e961dc1ced3dd53cfa66341181ae5de8a5a04bc8b161b0fdeb6367e3de3b75f29c76361d0d7e6a77c859691a40c814454b6847df3fd959c15b527b3a7db41a21c3ad52807d9b6a9",
+    "strategies": [
+      "jwt",
+      "local"
+    ],
+    "path": "/auth/authentication",
+    "service": "user",
+    "jwt": {
+      "header": {
+        "type": "access"
+      },
+      "audience": "https://hdb01.humandb.ai",
+      "subject": "HumanDB",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "30d"
+    },
+    "local": {
+      "entity": "user",
+      "usernameField": "email",
+      "passwordField": "password"
+    },
+    "google": {
+      "clientID": "GOOGLE_OAUTH_CLIENT_ID",
+      "clientSecret": "GOOGLE_OAUTH_CLIENT_SECRET",
+      "scope": [
+        "https://www.googleapis.com/auth/userinfo.email"
+      ],
+      "callbackURL": "GOOGLE_OAUTH_CALLBACK_URL",
+      "successRedirect": "GOOGLE_OAUTH_SUCCESS_REDIRECT"
+    }
+  }
+}

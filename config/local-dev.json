@@ -1,0 +1,7 @@
+{
+  "authentication": {
+    "jwt": {
+      "audience": "http://humandb-portal-local-development.com"
+    }
+  }
+}

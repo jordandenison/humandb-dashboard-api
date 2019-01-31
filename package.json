@@ -1,0 +1,75 @@
+{
+  "name": "humandb-auth-api",
+  "description": "",
+  "version": "0.0.1",
+  "homepage": "https://humandb.ai/",
+  "main": "src/index.js",
+  "private": true,
+  "directories": {
+    "lib": "src",
+    "test": "test/"
+  },
+  "scripts": {
+    "lint": "standard --fix",
+    "migrate": "sequelize db:migrate --url $(./scripts/get-pg-connection-string.sh)",
+    "reset-database": "node scripts/reset-database.js",
+    "start": "yarn run migrate && forever src/index.js",
+    "start-dev": "yarn run migrate && nodemon",
+    "test": "yarn run test-cleanup && nyc ava 'test/*.test.js' --verbose",
+    "test-cleanup": "node scripts/test-cleanup.js"
+  },
+  "dependencies": {
+    "@feathersjs/authentication": "^2.1.1",
+    "@feathersjs/authentication-client": "^1.0.2",
+    "@feathersjs/authentication-jwt": "^2.0.0",
+    "@feathersjs/authentication-local": "^1.1.0",
+    "@feathersjs/authentication-oauth2": "^1.0.3",
+    "@feathersjs/configuration": "^1.0.2",
+    "@feathersjs/errors": "^3.2.2",
+    "@feathersjs/express": "^1.1.2",
+    "@feathersjs/feathers": "^3.1.0",
+    "@feathersjs/socketio": "^3.0.2",
+    "@feathersjs/socketio-client": "^1.0.2",
+    "app-module-path": "^2.2.0",
+    "basic-auth": "^2.0.0",
+    "body-parser": "^1.18.2",
+    "captchapng": "^0.0.1",
+    "compression": "^1.7.0",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "discourse-sso": "^1.0.3",
+    "dotenv": "^6.0.0",
+    "feathers-authentication-hooks": "^0.1.4",
+    "feathers-hooks-common": "^3.7.3",
+    "feathers-sequelize": "^2.4.0",
+    "fhir.js": "^0.0.20",
+    "helmet": "^3.8.1",
+    "http-proxy": "^1.17.0",
+    "lodash": "^4.17.4",
+    "passport-google-oauth20": "^1.0.0",
+    "pg": "^7.6.1",
+    "safe-buffer": "^5.1.1",
+    "sequelize": "^4.41.2",
+    "serve-favicon": "^2.4.4",
+    "smart-client": "^1.1.1",
+    "superagent": "^3.8.3",
+    "uuid": "^3.2.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "ava": "^0.22.0",
+    "dotenv-cli": "^1.4.0",
+    "faker": "^4.1.0",
+    "nodemon": "^1.12.1",
+    "nyc": "^11.2.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "standard": "^10.0.3",
+    "supertest": "^3.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "public/"
+    ]
+  }
+}

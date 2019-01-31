@@ -1,0 +1,7 @@
+{
+  "host": "auth.humandb.ai",
+  "port": "PORT",
+  "authentication": {
+    "secret": "JWT_SECRET"
+  }
+}
