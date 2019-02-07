@@ -7,8 +7,6 @@ const port = app.get('port')
 const realtime = require('lib/realtime')
 const { delay } = require('lib/util')
 const seedInitialData = require('../scripts/seed-initial-data')
-const oneUp = require('lib/1up')
-// const fhir = require('lib/fhir')
 
 process.on('uncaughtException', e => {
   logger.error('Uncaught exception: ', e.stack)
@@ -32,10 +30,6 @@ const listen = () => {
     seedInitialData(app)
 
     realtime.init(app)
-
-    oneUp.init(app)
-
-    // fhir.syncData(app)
   })
 
   server.on('error', e => logger.error('App startup error ', e.stack))

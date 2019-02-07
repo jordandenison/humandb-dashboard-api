@@ -38,7 +38,7 @@ module.exports = {
 
     app.post(/(\/auth)?\/discourse\/redirect/, async (req, res) => {
       try {
-        const accessToken = req.headers.authorization.replace(bearerRegexp, '')
+        const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
         const secret = app.get('authentication').secret
 
         const jwt = await verifyJWT(accessToken, secret)
@@ -64,7 +64,7 @@ module.exports = {
 
     app.post(/(\/auth)?\/discourse\/logout/, async (req, res) => {
       try {
-        const accessToken = req.headers.authorization.replace(bearerRegexp, '')
+        const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
         const secret = app.get('authentication').secret
 
         const { userId } = await verifyJWT(accessToken, secret)
