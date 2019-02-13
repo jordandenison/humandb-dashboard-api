@@ -45,6 +45,7 @@
     "fhir.js": "^0.0.20",
     "helmet": "^3.8.1",
     "http-proxy": "^1.17.0",
+    "http-proxy-middleware": "^0.19.1",
     "lodash": "^4.17.4",
     "passport-google-oauth20": "^1.0.0",
     "pg": "^7.6.1",

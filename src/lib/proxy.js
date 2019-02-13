@@ -1,7 +1,7 @@
+const httpProxy = require('http-proxy-middleware')
 const configuration = require('@feathersjs/configuration')
 const { verify } = require('jsonwebtoken')
 const express = require('express')
-const httpProxy = require('http-proxy')
 const basicAuth = require('basic-auth')
 
 const bearerRegexp = /^bearer /i
@@ -26,17 +26,20 @@ const verifyJWT = (req, res, next) => {
   }
 }
 
-const handler = (proxy, target) => async (req, res) => {
-  delete req.headers['authorization']
-
-  proxy.web(req, res, { target, changeOrigin: true, ws: true })
-}
-
 module.exports = target => {
   const router = express.Router()
-  const proxy = httpProxy.createProxyServer()
+  const proxyOptions = {
+    target,
+    changeOrigin: true,
+    // ws: true, // Enabling this causes the main dashboard app ws connection to stop working after visiting the FHIR Server UI
+    pathRewrite: {
+      '^/auth/fhir(-stu[23]-ui)?(/stu[23])?': ''
+    }
+  }
 
-  router.use(verifyJWT, handler(proxy, target))
+  const proxy = httpProxy(proxyOptions)
+
+  router.use(verifyJWT, proxy)
 
   return router
 }
