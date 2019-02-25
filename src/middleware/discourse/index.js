@@ -1,4 +1,4 @@
-const superagent = require('superagent')
+const superagent = require('superagent') //
 const uuid = require('uuid/v4')
 
 const { verifyJWT } = require('lib/authentication')
@@ -52,9 +52,9 @@ module.exports = {
         }
 
         const user = await app.service('user').get(jwt.userId)
-
+console.log('path params ', tempToken.nonce, user.id, user.email)
         const path = sso.getRedirectString(tempToken.nonce, user.id, user.email)
-
+console.log('path ', path)
         res.json({ path })
       } catch (e) {
         console.log(`Discourse redirect error ${e.message}`)
@@ -83,3 +83,4 @@ module.exports = {
     })
   }
 }
+
