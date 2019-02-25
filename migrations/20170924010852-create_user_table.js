@@ -18,9 +18,9 @@ module.exports = {
       role: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'user',
+        defaultValue: 'advisor',
         validate: {
-          is: /^(owner|admin|internal|user)$/
+          is: /^(owner|navigator|advisor|internal)$/
         }
       },
       password: Sequelize.STRING(255),
