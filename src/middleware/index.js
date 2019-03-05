@@ -1,6 +1,6 @@
 const superagent = require('superagent')
 
-const { verifyJWT } = require('lib/authentication')
+const { getLocalDeveloperToken, verifyJWT } = require('lib/authentication')
 const proxy = require('lib/proxy')
 const discourse = require('./discourse')
 
@@ -10,6 +10,18 @@ module.exports = function () {
   const app = this
 
   discourse.init(app)
+
+  if (process.env.ALLOW_DEV_LOGIN) {
+    app.get(/(\/auth)?\/dev-login/, async (req, res, next) => {
+      try {
+        const accessToken = await getLocalDeveloperToken(app)
+
+        res.json({ accessToken })
+      } catch (e) {
+        return next(e)
+      }
+    })
+  }
 
   app.get(/(\/auth)?\/set-cookie/, async (req, res, next) => {
     try {
