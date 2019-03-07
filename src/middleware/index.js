@@ -1,4 +1,5 @@
 const superagent = require('superagent')
+const filemanagerMiddleware = require('@opuscapita/filemanager-server').middleware
 
 const { getLocalDeveloperToken, verifyJWT } = require('lib/authentication')
 const proxy = require('lib/proxy')
@@ -6,8 +7,15 @@ const discourse = require('./discourse')
 
 const bearerRegexp = /^bearer /i
 
+const fileManagerConfig = {
+  fsRoot: '/resources',
+  rootName: 'resources'
+}
+
 module.exports = function () {
   const app = this
+
+  app.use(/^(\/auth)?\/files/, filemanagerMiddleware(fileManagerConfig))
 
   discourse.init(app)
 
