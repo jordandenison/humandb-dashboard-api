@@ -84,7 +84,22 @@ module.exports = function () {
 
       res.json({ status: 'ok' })
     } catch (e) {
-      return next(`Error posting message to Discourse ${e.message}`)
+      return next(`Error generating data report ${e.message}`)
+    }
+  })
+
+  app.post(/(\/auth)?\/sync-1up-data/, async (req, res, next) => {
+    try {
+      const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
+      const secret = app.get('authentication').secret
+
+      await verifyJWT(accessToken, secret)
+
+      await superagent.post(`http://1up/sync-data`)
+
+      res.json({ status: 'ok' })
+    } catch (e) {
+      return next(`Error syncing 1up data ${e.message}`)
     }
   })
 }
