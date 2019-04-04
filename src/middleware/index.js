@@ -12,6 +12,38 @@ const fileManagerConfig = {
   rootName: 'resources'
 }
 
+const verifyToken = app => async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
+    const secret = app.get('authentication').secret
+
+    await verifyJWT(accessToken, secret)
+
+    return next()
+  } catch (e) {
+    return next(e)
+  }
+}
+
+const postDiscourseMessage = async (raw, title, category) => {
+  const url = 'http://discourse-web/discussion/posts'
+
+  let superagentRequest = superagent
+    .post(url)
+    .send(`raw=${raw}`)
+    .send(`title=${title}`)
+    .send(`api_key=${process.env.DISCOURSE_ADMIN_API_KEY}`)
+    .send(`api_username=${process.env.DISCOURSE_ADMIN_USERNAME}`)
+
+  if (category) {
+    superagentRequest = superagentRequest.send(`category=${category}`)
+  }
+
+  const { body } = await superagentRequest
+
+  return body
+}
+
 module.exports = function () {
   const app = this
 
@@ -31,12 +63,9 @@ module.exports = function () {
     })
   }
 
-  app.get(/(\/auth)?\/set-cookie/, async (req, res, next) => {
+  app.get(/(\/auth)?\/set-cookie/, verifyToken(app), async (req, res, next) => {
     try {
       const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
-      const secret = app.get('authentication').secret
-
-      await verifyJWT(accessToken, secret)
 
       res.cookie('jwt', accessToken, { maxAge: 90000000, httpOnly: true })
 
@@ -51,35 +80,32 @@ module.exports = function () {
   app.use(/^\/auth\/fhir-stu2-ui(\/stu2)?/, proxy('http://stu2:4002'))
   app.use(/^\/auth\/fhir-stu3-ui(\/stu3)?/, proxy('http://stu3:4003'))
 
-  app.post(/(\/auth)?\/discussion\/post\/message/, async (req, res, next) => {
+  app.post(/(\/auth)?\/discussion\/post\/message/, verifyToken(app), async (req, res, next) => {
     try {
-      const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
-      const secret = app.get('authentication').secret
+      const { raw, title } = req.body
 
-      await verifyJWT(accessToken, secret)
+      const result = await postDiscourseMessage(raw, title)
 
-      const { title, raw } = req.body
-
-      const { body: json } = await superagent
-        .post(`http://discourse-web/discussion/posts`)
-        .send(`raw=${raw}`)
-        .send(`title=${title}`)
-        .send(`api_key=${process.env.DISCOURSE_ADMIN_API_KEY}`)
-        .send(`api_username=${process.env.DISCOURSE_ADMIN_USERNAME}`)
-
-      res.json(json)
+      res.json(result)
     } catch (e) {
       return next(`Error posting message to Discourse ${e.message}`)
     }
   })
 
-  app.post(/(\/auth)?\/generate-data-report/, async (req, res, next) => {
+  app.post(/(\/auth)?\/discussion\/post\/event/, verifyToken(app), async (req, res, next) => {
     try {
-      const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
-      const secret = app.get('authentication').secret
+      const { raw, title } = req.body
 
-      await verifyJWT(accessToken, secret)
+      const result = await postDiscourseMessage(raw, title, 'Status')
 
+      res.json(result)
+    } catch (e) {
+      return next(`Error posting event to Discourse ${e.message}`)
+    }
+  })
+
+  app.post(/(\/auth)?\/generate-data-report/, verifyToken(app), async (req, res, next) => {
+    try {
       await superagent.post(`http://data-reporting/generate-report`)
 
       res.json({ status: 'ok' })
@@ -88,13 +114,8 @@ module.exports = function () {
     }
   })
 
-  app.post(/(\/auth)?\/sync-1up-data/, async (req, res, next) => {
+  app.post(/(\/auth)?\/sync-1up-data/, verifyToken(app), async (req, res, next) => {
     try {
-      const accessToken = req.headers.authorization.replace(bearerRegexp, '') || req.cookies.jwt
-      const secret = app.get('authentication').secret
-
-      await verifyJWT(accessToken, secret)
-
       await superagent.post(`http://1up/sync-data`)
 
       res.json({ status: 'ok' })
