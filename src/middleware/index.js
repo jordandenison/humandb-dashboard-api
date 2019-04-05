@@ -96,7 +96,7 @@ module.exports = function () {
     try {
       const { raw, title } = req.body
 
-      const result = await postDiscourseMessage(raw, title, 'Status')
+      const result = await postDiscourseMessage(raw, title, 'Logs')
 
       res.json(result)
     } catch (e) {
