@@ -1,7 +1,7 @@
 const superagent = require('superagent')
 const filemanagerMiddleware = require('@opuscapita/filemanager-server').middleware
 
-const { getLocalDeveloperToken, verifyJWT } = require('lib/authentication')
+const { getLocalDeveloperToken, getLocalToken, verifyJWT } = require('lib/authentication')
 const proxy = require('lib/proxy')
 const discourse = require('./discourse')
 
@@ -62,6 +62,22 @@ module.exports = function () {
       }
     })
   }
+
+  app.post(/(\/auth)?\/sso-login/, async (req, res, next) => {
+    try {
+      const accessToken = req.body.accessToken
+
+      const { body: { user } } = await superagent.post(process.env.SSO_VERIFY_TOKEN_URL).send({ accessToken })
+
+      console.log('sso user ', user)
+
+      const localAccessToken = await getLocalToken(app, user.email)
+
+      res.json({ localAccessToken })
+    } catch (e) {
+      return next(e)
+    }
+  })
 
   app.get(/(\/auth)?\/set-cookie/, verifyToken(app), async (req, res, next) => {
     try {

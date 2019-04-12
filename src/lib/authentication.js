@@ -22,6 +22,18 @@ module.exports = {
     )
   },
 
+  getLocalToken: async (app, email) => {
+    const { data } = await app.service('user').find({ query: { email } })
+    const [user] = data
+
+    if (!user) { throw new Error('User not authorized to access this HumanDB') }
+
+    return app.passport.createJWT(
+      { userId: user.id },
+      Object.assign({}, options, { secret: app.get('authentication').secret })
+    )
+  },
+
   verifyJWT (accessToken, secret) {
     return verifyAsync(accessToken, secret)
   }
