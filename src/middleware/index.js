@@ -69,9 +69,7 @@ module.exports = function () {
 
       const { body: { user } } = await superagent.post(process.env.SSO_VERIFY_TOKEN_URL).send({ accessToken })
 
-      console.log('sso user ', user)
-
-      const localAccessToken = await getLocalToken(app, user.email)
+      const localAccessToken = await getLocalToken(app, user.userId)
 
       res.json({ localAccessToken })
     } catch (e) {
