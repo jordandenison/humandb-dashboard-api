@@ -1,0 +1,390 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is documentation is for the auth dashboard API endpoint, which provides user and authentication services for a HumanDB",
+    "version": "1.0.0",
+    "title": "HumanDB Auth Dashboard API",
+    "termsOfService": "http://humandb.ai/terms/",
+    "contact": {
+      "email": "admin@humandb.ai"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "humandb.ai",
+  "basePath": "/auth",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/authentication": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Authenticates a container",
+        "description": "The purpose of this endpoint is to authenticate users for containers.",
+        "operationId": "authenticate",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "description": "The container user to authentication. Strategy should be set to \"local\" if the API is feathers based, otherwise can be omitted. Should return an accessToken and the user object.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "strategy": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Fetch existing users",
+        "description": "Fetch existing users",
+        "operationId": "getUsers",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The UUID of the user"
+          },
+          {
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The email of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "dashboard_auth": [
+              "read:user"
+            ]
+          }
+        ]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Fetch an existing user",
+        "description": "Fetch an existing user",
+        "operationId": "getUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The UUID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "dashboard_auth": [
+              "read:user"
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update an existing user",
+        "description": "Update existing users",
+        "operationId": "patchUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The UUID of the user"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object to be edited",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        },
+        "security": [
+          {
+            "dashboard_auth": [
+              "write:user"
+            ]
+          }
+        ]
+      }
+    },
+    "/discussion/post/message": {
+      "post": {
+        "tags": [
+          "discussion"
+        ],
+        "summary": "Posts a discussion message",
+        "description": "Posts a message as a new thread to the HumanDB discussion app.",
+        "operationId": "discussionMessage",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "description": "Posts a message as a new thread in the discussion app as HTML (\"raw\" property). Title must be unique.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "title",
+                "raw"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "raw": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/discussion/post/event": {
+      "post": {
+        "tags": [
+          "discussion"
+        ],
+        "summary": "Posts a log message as a discussion message",
+        "description": "Posts a log message as a new thread to the HumanDB discussion app.",
+        "operationId": "discussionEvent",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "description": "Posts a log message as a new thread in the discussion app with the \"logs\" category as HTML (\"raw\" property). Title must be unique.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "title",
+                "raw"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "raw": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "dashboard_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://hdb01.humandb.ai/login",
+      "flow": "implicit",
+      "scopes": {
+        "read:user": "read service user",
+        "write:user": "modify service user"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "required": [
+        "service",
+        "dependency"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuidv4"
+        },
+        "email": {
+          "type": "string",
+          "example": "container@humandb.ai"
+        },
+        "password": {
+          "type": "string",
+          "example": "password"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
