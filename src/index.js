@@ -18,7 +18,7 @@ process.on('unhandledRejection', reason =>
 )
 
 const listen = () => {
-  if (!app.service('user') || !app.service('user').Model) {
+  if (!app.getService('user') || !app.getService('user').Model) {
     return delay(250).then(listen)
   }
 

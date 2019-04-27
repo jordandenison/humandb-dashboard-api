@@ -13,7 +13,7 @@
       "local"
     ],
     "path": "/auth/authentication",
-    "service": "user",
+    "service": "auth/user",
     "jwt": {
       "header": {
         "type": "access"

@@ -14,10 +14,10 @@ module.exports = function () {
   }
 
   // Initialize our service with any options it requires
-  app.use('/tempToken', createService(options))
+  app.use('/auth/tempToken', createService(options))
 
   // Get our initialized service so that we can register hooks and filters
-  const service = app.service('tempToken')
+  const service = app.service('auth/tempToken')
 
   service.hooks(hooks)
 }

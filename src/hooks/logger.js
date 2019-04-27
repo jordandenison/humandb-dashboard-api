@@ -8,7 +8,7 @@ module.exports = () =>
     let message = `${hook.type}: ${hook.path} - Method: ${hook.method}`
 
     if (hook.type === 'error') {
-      message += `: ${hook.error.message}`
+      message += `: ${hook.error.stack}`
     }
 
     logger.info(message)

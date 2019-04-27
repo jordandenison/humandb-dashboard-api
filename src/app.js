@@ -25,6 +25,8 @@ sequelize(app).then(() => app.configure(services))
 
 app.configure(configuration())
 
+app.getService = name => app.service(`auth/${name}`)
+
 app.use(cors())
 app.use(helmet())
 app.use(compress())

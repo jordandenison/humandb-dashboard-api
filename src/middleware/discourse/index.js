@@ -23,7 +23,7 @@ module.exports = {
         const nonce = sso.getNonce(payload)
         const value = uuid()
 
-        await app.service('tempToken').create({
+        await app.getService('tempToken').create({
           nonce,
           value,
           type: 'discourse_sso'
@@ -44,14 +44,14 @@ module.exports = {
         const jwt = await verifyJWT(accessToken, secret)
         const { discourseSSOTempToken } = req.body
 
-        const { data } = await app.service('tempToken').find({ query: { value: discourseSSOTempToken } })
+        const { data } = await app.getService('tempToken').find({ query: { value: discourseSSOTempToken } })
         const [tempToken] = data
 
         if (!tempToken) {
           return res.status(401).send({ error: 'Temporary token invalid' })
         }
 
-        const user = await app.service('user').get(jwt.userId)
+        const user = await app.getService('user').get(jwt.userId)
 
         const path = sso.getRedirectString(tempToken.nonce, user.id, user.email)
 

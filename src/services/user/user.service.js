@@ -14,10 +14,10 @@ module.exports = function () {
   }
 
   // Initialize our service with any options it requires
-  app.use('/user', createService(options))
+  app.use('/auth/user', createService(options))
 
   // Get our initialized service so that we can register hooks and filters
-  const service = app.service('user')
+  const service = app.service('auth/user')
 
   service.hooks(hooks)
 }

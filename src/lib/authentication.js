@@ -13,7 +13,7 @@ const options = {
 
 module.exports = {
   getLocalDeveloperToken: async app => {
-    const { data } = await app.service('user').find({ query: { role: 'owner' } })
+    const { data } = await app.getService('user').find({ query: { role: 'owner' } })
     const [user] = data
 
     return app.passport.createJWT(
@@ -23,7 +23,7 @@ module.exports = {
   },
 
   getLocalToken: async (app, email) => {
-    const { data } = await app.service('user').find({ query: { email } })
+    const { data } = await app.getService('user').find({ query: { email } })
     const [user] = data
 
     if (!user) { throw new Error('User not authorized to access this HumanDB') }
