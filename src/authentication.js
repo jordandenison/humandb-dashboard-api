@@ -4,7 +4,6 @@ const local = require('@feathersjs/authentication-local')
 
 const populateUser = () =>
   hook =>
-  console.log('hooks params ', hook.params) ||
     hook.app.getService('user').get(hook.params.user.id)
       .then(user => {
         hook.result.user = user
