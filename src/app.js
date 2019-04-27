@@ -21,8 +21,6 @@ const sequelize = require('./sequelize')
 
 const app = express(feathers())
 
-sequelize(app).then(() => app.configure(services))
-
 app.configure(configuration())
 
 app.getService = name => app.service(`auth/${name}`)
@@ -37,8 +35,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.configure(rest())
 app.configure(socketio({ path: '/auth/socket.io' }))
 
+app.configure(sequelize)
 app.configure(middleware)
 app.configure(authentication)
+app.configure(services)
 
 app.get(/(\/auth)?\/health/, (req, res) => res.send('OK'))
 

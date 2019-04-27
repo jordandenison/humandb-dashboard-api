@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-module.exports = async app => {
+module.exports = app => {
   const host = process.env.POSTGRES_HOST
   const port = process.env.POSTGRES_PORT
   const database = process.env.POSTGRES_DB
