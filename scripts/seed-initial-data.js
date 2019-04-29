@@ -18,6 +18,12 @@ const getUsers = () => {
 
   users[0].role = 'owner'
 
+  users.push({
+    email: process.env.INTERNAL_API_USERNAME,
+    password: process.env.INTERNAL_API_USERNAME,
+    role: 'internal'
+  })
+
   if (process.env.ADVAITABIO_API_USERNAME) {
     users.push({
       email: process.env.ADVAITABIO_API_USERNAME,
