@@ -5,7 +5,7 @@ const delay = time => new Promise((resolve) => setTimeout(resolve, time))
 
 const purgeData = app => {
   const promises = [
-    app.service('user').remove(null)
+    app.service('auth/user').remove(null)
   ]
 
   return Promise.all(promises)
@@ -45,7 +45,7 @@ const getUsers = () => {
 
 module.exports = app => {
   const seed = async () => {
-    if (!app.service('user') || !app.service('user').Model) {
+    if (!app.service('auth/user') || !app.service('auth/user').Model) {
       await delay(250)
 
       return seed()
@@ -61,13 +61,13 @@ module.exports = app => {
         if (user.email) { find.query.email = user.email }
         if (user.id) { find.query.id = user.id }
 
-        const { total } = await app.service('user').find(find)
+        const { total } = await app.service('auth/user').find(find)
 
         if (total) {
-          return app.service('user').patch(null, user, find)
+          return app.service('auth/user').patch(null, user, find)
         }
 
-        return app.service('user').create(user)
+        return app.service('auth/user').create(user)
       })
     } catch (e) {
       console.log(`Error seeding initial data: ${e.message}`)
